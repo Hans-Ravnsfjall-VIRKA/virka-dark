@@ -18,6 +18,28 @@
     }, { passive: true });
   }
 
+  /* ---------- Theme toggle ----------
+     Preference stored in a cookie named "virka-theme" (dark | light).
+     A pre-paint script in <head> already applied the cookie value to
+     <html data-theme="..."> before paint. Here we just wire the button. */
+  const themeToggle = document.querySelector('.theme-toggle');
+  if (themeToggle) {
+    const setTheme = (theme) => {
+      if (theme === 'light') {
+        document.documentElement.setAttribute('data-theme', 'light');
+      } else {
+        document.documentElement.removeAttribute('data-theme');
+      }
+      // Cookie: 1 year, SameSite=Lax, path=/.
+      // Using max-age (in seconds) is more reliable than expires.
+      document.cookie = 'virka-theme=' + theme + '; path=/; max-age=31536000; SameSite=Lax';
+    };
+    themeToggle.addEventListener('click', () => {
+      const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+      setTheme(isLight ? 'dark' : 'light');
+    });
+  }
+
   /* ---------- Mobile menu ---------- */
   const menuToggle = document.querySelector('.menu-toggle');
   const mobileNav = document.querySelector('.mobile-nav');

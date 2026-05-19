@@ -3,6 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+(function(){
+  try {
+    var m = document.cookie.match(/(?:^|;\s*)virka-theme=(dark|light)/);
+    if (m && m[1] === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  } catch(e) {}
+})();
+</script>
 
 <title>Avrik — VIRKA</title>
 <meta name="description" content="Eitt yvirlit yvir avrik hjá VIRKA — frá Jobmatch til Visit North, frá Immuk til Úr haga á hill.">
@@ -37,12 +47,23 @@
       <polygon points="733.13 .08 700.08 .08 628.72 223.67 655.95 223.67 716.45 41.02 774.38 222.32 774.8 223.67 804.24 223.67 733.13 .08"/>
     </svg>
   </a>
-  <nav class="nav" aria-label="Høvuðsleiðing">
+  <div class="header-right">
+    <nav class="nav" aria-label="Høvuðsleiðing">
     <a href="avrik.html" aria-current="page">Avrik</a>
     <a href="index.html#starvsfolk">Starvsfólk</a>
     <a href="index.html#samband">Samband</a>
   </nav>
-  <button class="menu-toggle" aria-label="Lat upp menu">Menu</button>
+    <button class="theme-toggle" type="button" aria-label="Skift tema">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+    <button class="menu-toggle" aria-label="Lat upp menu">Menu</button>
+  </div>
 </header>
 
 <div class="mobile-nav" role="dialog" aria-modal="true" aria-label="Menu">
