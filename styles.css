@@ -1512,3 +1512,328 @@ body.overlay-open { overflow: hidden; }
     animation-duration: 0.001ms !important;
   }
 }
+
+/* =========================================================
+   ALTERNATIVE — APPLE REGISTER
+   Light-first marketing surface. One case per slide.
+   Alternating light/dark for rhythm. Type carries the page.
+   Scoped to `.body--apple` so the current dark site is untouched.
+   ========================================================= */
+
+.body--apple {
+  /* Apple's canonical light-mode palette, adjusted to feel warm */
+  --a-light:        #f5f5f7;     /* page default */
+  --a-light-2:      #fbfbfd;     /* slightly brighter slides */
+  --a-dark:         #1d1d1f;     /* Apple ink black */
+  --a-dark-2:       #111;        /* deeper dark for marquee moments */
+  --a-ink:          #1d1d1f;
+  --a-ink-2:        #6e6e73;     /* Apple's secondary gray */
+  --a-ink-inv:      #f5f5f7;
+  --a-ink-inv-2:    #86868b;
+  --a-link:         #0066cc;     /* Apple's link blue */
+  --a-rule-light:   rgba(0,0,0,0.08);
+  --a-rule-dark:    rgba(255,255,255,0.10);
+
+  background: var(--a-light);
+  color: var(--a-ink);
+  font-feature-settings: "ss01";
+}
+
+/* Header on light. Apple's nav is calm, centered, hairline rule below
+   when scrolled, no decoration. Wordmark sits inline with nav. */
+.body--apple .site-header {
+  color: var(--a-ink);
+  border-bottom: 1px solid transparent;
+}
+
+.body--apple .site-header.bg {
+  background: color-mix(in oklch, var(--a-light) 80%, transparent);
+  backdrop-filter: blur(20px) saturate(1.5);
+  -webkit-backdrop-filter: blur(20px) saturate(1.5);
+  border-bottom-color: var(--a-rule-light);
+}
+
+.body--apple .nav a { color: var(--a-ink-2); }
+.body--apple .nav a:hover,
+.body--apple .nav a[aria-current="page"] { color: var(--a-ink); }
+.body--apple .menu-toggle { color: var(--a-ink-2); }
+.body--apple .menu-toggle:hover { color: var(--a-ink); }
+
+/* =========================================================
+   HERO — light, type-only, ample air
+   ========================================================= */
+
+.apple-hero {
+  position: relative;
+  min-height: 88svh;
+  display: grid;
+  align-content: center;
+  padding: 9rem var(--gutter) var(--s-16);
+  background: var(--a-light);
+  text-align: center;
+  overflow: hidden;
+}
+
+.apple-hero .hero-mark {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--a-ink-2);
+  margin: 0 0 var(--s-6);
+}
+
+.apple-hero h1 {
+  /* Apple's hero headline scale — generously large, tight tracking */
+  font-size: clamp(3rem, 9vw, 8rem);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  margin: 0 auto var(--s-6);
+  max-width: 14ch;
+  color: var(--a-ink);
+}
+
+.apple-hero .hero-sub {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  color: var(--a-ink-2);
+  max-width: 44ch;
+  margin: 0 auto var(--s-10);
+}
+
+.apple-hero .hero-cta-row {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-6);
+  margin: 0 auto;
+}
+
+.apple-hero .hero-cta {
+  font-size: 1.0625rem;
+  color: var(--a-link);
+  letter-spacing: -0.005em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  position: relative;
+  padding: 0.25em 0;
+}
+
+.apple-hero .hero-cta::after {
+  content: "›";
+  font-size: 1.2em;
+  line-height: 1;
+  transition: transform 0.4s var(--ease-out-quart);
+}
+
+.apple-hero .hero-cta:hover::after { transform: translateX(4px); }
+
+@media (max-width: 760px) {
+  .apple-hero { padding: 6rem var(--gutter) var(--s-10); min-height: 80svh; }
+}
+
+/* =========================================================
+   SLIDE — one case fills one viewport
+   ========================================================= */
+
+.apple-slide {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: var(--s-12) var(--gutter);
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.apple-slide.is-dark  { background: var(--a-dark);  color: var(--a-ink-inv); }
+.apple-slide.is-light { background: var(--a-light); color: var(--a-ink); }
+.apple-slide.is-deep  { background: var(--a-dark-2); color: var(--a-ink-inv); }
+
+.apple-slide a.slide-link {
+  display: contents;
+  color: inherit;
+}
+
+/* Top of slide: small label + headline */
+.apple-slide .slide-head {
+  text-align: center;
+  padding: var(--s-6) 0 var(--s-8);
+  position: relative;
+  z-index: 2;
+}
+
+.apple-slide .slide-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--a-ink-2);
+  margin: 0 0 var(--s-4);
+}
+
+.apple-slide.is-dark .slide-eyebrow,
+.apple-slide.is-deep .slide-eyebrow { color: var(--a-ink-inv-2); }
+
+.apple-slide .slide-title {
+  font-size: clamp(2.5rem, 6.5vw, 5.5rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.04;
+  margin: 0 auto var(--s-4);
+  max-width: 18ch;
+}
+
+.apple-slide .slide-sub {
+  font-size: clamp(1.0625rem, 1.4vw, 1.375rem);
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 1.4;
+  color: var(--a-ink-2);
+  max-width: 42ch;
+  margin: 0 auto;
+}
+
+.apple-slide.is-dark .slide-sub,
+.apple-slide.is-deep .slide-sub { color: var(--a-ink-inv-2); }
+
+/* The big art block — image or video, fills the slide body */
+.apple-slide .slide-art {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  align-self: center;
+  border-radius: 18px;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: color-mix(in oklch, currentColor 6%, transparent);
+}
+
+.apple-slide .slide-art img,
+.apple-slide .slide-art video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 1.6s var(--ease-out-quart);
+}
+
+.apple-slide a.slide-link:hover .slide-art img,
+.apple-slide a.slide-link:hover .slide-art video {
+  transform: scale(1.015);
+}
+
+.apple-slide .slide-foot {
+  text-align: center;
+  padding: var(--s-6) 0 var(--s-2);
+  position: relative;
+  z-index: 2;
+}
+
+.apple-slide .slide-foot a {
+  font-size: 1.0625rem;
+  color: var(--a-link);
+  letter-spacing: -0.005em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.25em 0;
+}
+
+.apple-slide.is-dark .slide-foot a,
+.apple-slide.is-deep .slide-foot a { color: #2997ff; /* Apple's brighter link on dark */ }
+
+.apple-slide .slide-foot a::after {
+  content: "›";
+  font-size: 1.2em;
+  line-height: 1;
+  transition: transform 0.4s var(--ease-out-quart);
+}
+
+.apple-slide .slide-foot a:hover::after { transform: translateX(4px); }
+
+@media (max-width: 760px) {
+  .apple-slide { padding: var(--s-10) var(--gutter); min-height: auto; }
+  .apple-slide .slide-art { aspect-ratio: 4 / 5; border-radius: 14px; }
+  .apple-slide .slide-head { padding: var(--s-4) 0 var(--s-6); }
+}
+
+/* =========================================================
+   FOOTER TRANSITION — the page's one CTA, sized to matter
+   ========================================================= */
+
+.apple-cta {
+  background: var(--a-light);
+  text-align: center;
+  padding: var(--s-20) var(--gutter) var(--s-16);
+}
+
+.apple-cta .cta-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--a-ink-2);
+  margin: 0 0 var(--s-6);
+}
+
+.apple-cta h2 {
+  font-size: clamp(2.75rem, 8vw, 6.5rem);
+  font-weight: 600;
+  letter-spacing: -0.045em;
+  line-height: 1.02;
+  margin: 0 auto var(--s-8);
+  max-width: 18ch;
+  color: var(--a-ink);
+}
+
+/* The one accent on the page — used here, here only */
+.apple-cta .cta-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  background: var(--a-link);
+  color: white;
+  padding: 0.85em 1.8em;
+  border-radius: 980px;        /* Apple's pill-button radius */
+  font-size: 1.0625rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  transition: background 0.3s var(--ease-out-quart);
+}
+
+.apple-cta .cta-primary:hover { background: #0052a3; }
+
+.apple-cta .cta-secondary {
+  display: inline-block;
+  margin-top: var(--s-5);
+  font-size: 1.0625rem;
+  color: var(--a-link);
+  letter-spacing: -0.005em;
+}
+
+.apple-cta .cta-secondary::after {
+  content: " ›";
+  display: inline-block;
+  transition: transform 0.4s var(--ease-out-quart);
+}
+
+.apple-cta .cta-secondary:hover::after { transform: translateX(4px); }
+
+/* =========================================================
+   FOOTER on the Apple variant — light, calm, tiny type
+   ========================================================= */
+
+.body--apple .site-footer {
+  background: var(--a-light);
+  color: var(--a-ink-2);
+  border-top: 1px solid var(--a-rule-light);
+}
+
+.body--apple .site-footer .footer-base { color: var(--a-ink-2); }
+.body--apple .site-footer .footer-base a:hover { color: var(--a-ink); }
