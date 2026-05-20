@@ -1,18 +1,18 @@
-/* VIRKA — Framferð page scrollytelling.
+/* VIRKA — Tilgongd page scrollytelling.
 
    Architecture:
    - Each .stage-verb section is PINNED via ScrollTrigger while the user
      scrolls one viewport's worth of distance through it.
    - During that pinned scroll, the verb word scales up from a starting
      size, holds, then scales-and-fades out.
-   - In parallel, the body's --bg-stage CSS variable cross-fades to the
-     next colour in the journey.
-   - The final philosophy paragraph reveals line by line as it enters view.
-   - The CTA stage has its own coloured background payoff.
+   - The conclusion paragraph reveals line by line via clip-path masking,
+     with a deliberate pause before the final line so it lands as a
+     statement rather than a third item in a list.
+   - The page background stays at the standard dark ink-blue throughout.
 
    Reduced motion: skip every scroll-pinned animation, show the page as a
-   straightforward vertical scroll with static colours. Static is still
-   readable — the page works without the choreography.
+   straightforward vertical scroll. Static is still readable, the page
+   works without the choreography.
 */
 
 (function () {
@@ -28,6 +28,7 @@
     document.querySelectorAll('.stage-prose .line').forEach(l => {
       l.style.opacity = '1';
       l.style.transform = 'none';
+      l.style.clipPath = 'none';
     });
     return;
   }
@@ -45,6 +46,7 @@
         document.querySelectorAll('.stage-prose .line').forEach(l => {
           l.style.opacity = '1';
           l.style.transform = 'none';
+          l.style.clipPath = 'none';
         });
         return;
       }
@@ -58,38 +60,6 @@
   function init() {
     const gsap = window.gsap;
     const ScrollTrigger = window.ScrollTrigger;
-
-    // ===== Background colour journey =====
-    // Each stage maps to a colour. As the user scrolls past a stage's
-    // midpoint, we ease the body --bg-stage variable to the next colour.
-
-    // OKLCH values chosen to feel like a gradual journey from the
-    // standard ink-blue through cooler / warmer steps to amber payoff.
-    const stages = [
-      { stage: 0, color: 'oklch(13% 0.012 250)' },  // ink blue (intro)
-      { stage: 1, color: 'oklch(15% 0.020 235)' },  // cooler blue
-      { stage: 2, color: 'oklch(16% 0.022 90)'  },  // warm slate
-      { stage: 3, color: 'oklch(17% 0.030 160)' },  // deep moss
-      { stage: 4, color: 'oklch(16% 0.040 320)' },  // smoky violet
-      { stage: 5, color: 'oklch(18% 0.060 65)'  },  // warm amber-tinted dark
-      { stage: 6, color: 'oklch(11% 0.014 250)' },  // almost-black (reveal)
-      { stage: 7, color: 'oklch(74% 0.16 60)'   },  // amber wash (payoff)
-    ];
-
-    // For each stage transition, register a ScrollTrigger that lerps
-    // --bg-stage on body as the stage scrolls into view.
-    stages.forEach((s, i) => {
-      const section = document.querySelector(`.framferd-stage[data-stage="${s.stage}"]`);
-      if (!section) return;
-
-      ScrollTrigger.create({
-        trigger: section,
-        start: 'top 70%',
-        end: 'top 20%',
-        onEnter:     () => gsap.to('body.page-framferd', { '--bg-stage': s.color, duration: 1.0, ease: 'power2.out' }),
-        onEnterBack: () => gsap.to('body.page-framferd', { '--bg-stage': s.color, duration: 1.0, ease: 'power2.out' }),
-      });
-    });
 
     // ===== Stage 0: opening lede ===
     // Simple fade-up reveal on entry, no pinning.
@@ -167,17 +137,30 @@
         .to(word, { scale: 1.45, opacity: 0, duration: 0.6, ease: 'power2.in' }, 0);
     });
 
-    // ===== Stage 6: line-by-line reveal of the philosophy paragraph ===
-    gsap.utils.toArray('.stage-prose .line').forEach((line, idx) => {
+    // ===== Stage 6: the conclusion — clip-path unveiling reveal ===
+    // Each line uncovers from top to bottom via clip-path, then the final
+    // line (which has its own visual separator above) lands with a longer
+    // beat after the two preceding parallels. The pacing is deliberate:
+    // statement, statement, [breath], conclusion.
+    const proseLines = gsap.utils.toArray('.stage-prose .line');
+    proseLines.forEach((line, idx) => {
+      const isFinal = line.classList.contains('line-final');
+      // First two lines: 0s and 0.55s. The final line waits an extra
+      // beat (1.3s) so the contrast lands as a separate statement, not a
+      // third item in a list.
+      const delay = isFinal ? 1.3 : idx * 0.55;
+      const duration = isFinal ? 1.4 : 1.0;
+
       gsap.to(line, {
         opacity: 1,
         y: 0,
-        duration: 0.9,
-        delay: idx * 0.12,
+        clipPath: 'inset(0 0 0% 0)',
+        duration: duration,
+        delay: delay,
         ease: 'expo.out',
         scrollTrigger: {
           trigger: '.stage-prose',
-          start: 'top 65%',
+          start: 'top 60%',
           toggleActions: 'play none none reverse',
         },
       });
