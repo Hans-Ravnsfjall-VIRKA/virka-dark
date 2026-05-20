@@ -1872,7 +1872,8 @@ main.framferd {
 .stage-cta .cta-title a {
   position: relative;
   display: inline-block;
-  border-bottom: 3px solid currentColor;
+  color: var(--accent);
+  border-bottom: 3px solid var(--accent);
   transition: opacity 0.3s var(--ease-out-quart);
 }
 
