@@ -210,5 +210,139 @@
     });
   }
 
+  /* ============================================================
+     STAFF PORTRAIT HOVER — GSAP diagonal clip-path reveal.
+
+     The base image stays put. On hover, a wrapper containing the hover
+     image opens via clip-path from the cursor's entry corner, sweeping
+     across the portrait. The hover image starts at scale 1.08 and settles
+     to 1.00 across the reveal, giving the impression of the image
+     resolving into place. The base image scales 1.03 in the same direction,
+     so motion is unified rather than feeling like two layers.
+
+     No-GSAP, no-hover, and reduced-motion all fall back gracefully — CSS
+     handles them. We add `body.js-gsap-ready` only when GSAP is loaded
+     and we're on a hover-capable device that isn't reduced-motion. */
+
+  function initStaffHover() {
+    if (reducedMotion || isTouch) return;
+    if (typeof window.gsap === 'undefined') return;
+
+    const cards = document.querySelectorAll('.staff-card');
+    if (!cards.length) return;
+
+    document.body.classList.add('js-gsap-ready');
+
+    cards.forEach((card) => {
+      const wrap = card.querySelector('.photo-hover-wrap');
+      const baseImg = card.querySelector('.photo-base');
+      const hoverImg = card.querySelector('.photo-hover-img');
+      if (!wrap || !baseImg || !hoverImg) return;
+
+      // Reset state: hover wrap fully clipped, hover image slightly oversized.
+      gsap.set(wrap, { clipPath: 'polygon(100% 0%, 100% 0%, 100% 0%, 100% 0%)' });
+      gsap.set(hoverImg, { scale: 1.08, transformOrigin: 'center center' });
+      gsap.set(baseImg, { scale: 1, transformOrigin: 'center center' });
+
+      let entryCorner = 'tr'; // top-right by default
+      let tl = null;
+
+      // Determine which corner the cursor came from on enter.
+      // The clip-path will open from that corner diagonally to the opposite.
+      card.addEventListener('mouseenter', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const inLeftHalf = x < rect.width / 2;
+        const inTopHalf  = y < rect.height / 2;
+        entryCorner = (inTopHalf ? 't' : 'b') + (inLeftHalf ? 'l' : 'r');
+
+        // Define start and end clip-path polygons based on entry corner.
+        // We want the reveal to sweep diagonally across the whole image.
+        const clips = {
+          // Sweep from top-right corner to bottom-left.
+          'tr': {
+            from: 'polygon(100% 0%, 100% 0%, 100% 0%, 100% 0%)',
+            to:   'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+            baseShift: { x: -8, y: 4 },
+          },
+          // Sweep from top-left.
+          'tl': {
+            from: 'polygon(0% 0%, 0% 0%, 0% 0%, 0% 0%)',
+            to:   'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+            baseShift: { x: 8, y: 4 },
+          },
+          // Sweep from bottom-right.
+          'br': {
+            from: 'polygon(100% 100%, 100% 100%, 100% 100%, 100% 100%)',
+            to:   'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+            baseShift: { x: -8, y: -4 },
+          },
+          // Sweep from bottom-left.
+          'bl': {
+            from: 'polygon(0% 100%, 0% 100%, 0% 100%, 0% 100%)',
+            to:   'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+            baseShift: { x: 8, y: -4 },
+          },
+        };
+        const c = clips[entryCorner];
+
+        // Kill any in-flight timeline so rapid hover doesn't queue up.
+        if (tl) tl.kill();
+
+        // Snap to start state, then animate to revealed state.
+        gsap.set(wrap, { clipPath: c.from });
+
+        tl = gsap.timeline({ defaults: { ease: 'expo.out' } })
+          .to(wrap, {
+            clipPath: c.to,
+            duration: 0.85,
+          }, 0)
+          .to(hoverImg, {
+            scale: 1.0,
+            duration: 1.1,
+            ease: 'expo.out',
+          }, 0)
+          .to(baseImg, {
+            scale: 1.03,
+            x: c.baseShift.x,
+            y: c.baseShift.y,
+            duration: 1.1,
+            ease: 'expo.out',
+          }, 0);
+      });
+
+      card.addEventListener('mouseleave', () => {
+        // Reverse, but faster — exit should feel light, not laboured.
+        if (tl) tl.kill();
+        const c = {
+          'tr': 'polygon(100% 0%, 100% 0%, 100% 0%, 100% 0%)',
+          'tl': 'polygon(0% 0%, 0% 0%, 0% 0%, 0% 0%)',
+          'br': 'polygon(100% 100%, 100% 100%, 100% 100%, 100% 100%)',
+          'bl': 'polygon(0% 100%, 0% 100%, 0% 100%, 0% 100%)',
+        }[entryCorner];
+
+        tl = gsap.timeline({ defaults: { ease: 'power3.inOut' } })
+          .to(wrap, { clipPath: c, duration: 0.5 }, 0)
+          .to(hoverImg, { scale: 1.08, duration: 0.55 }, 0)
+          .to(baseImg, { scale: 1, x: 0, y: 0, duration: 0.55 }, 0);
+      });
+    });
+  }
+
+  // GSAP may load asynchronously. If it's already there at this point, run
+  // immediately. Otherwise wait briefly and check again, then give up.
+  function whenGsapReady(maxWaitMs, cb) {
+    if (typeof window.gsap !== 'undefined') return cb();
+    const start = performance.now();
+    const tick = () => {
+      if (typeof window.gsap !== 'undefined') return cb();
+      if (performance.now() - start > maxWaitMs) return; // give up; CSS fallback handles it
+      requestAnimationFrame(tick);
+    };
+    tick();
+  }
+
+  whenGsapReady(2000, initStaffHover);
 
 })();

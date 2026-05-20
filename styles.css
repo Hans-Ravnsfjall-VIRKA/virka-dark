@@ -660,12 +660,11 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 }
 
 .contact-eyebrow {
-  font-family: var(--font-mono);
-  font-size: var(--t-small);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  margin-bottom: var(--s-8);
+  font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+  letter-spacing: -0.005em;
+  color: var(--ink-2);
+  margin-bottom: var(--s-6);
+  line-height: 1.4;
 }
 
 .contact-title {
@@ -698,8 +697,8 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 
 .contact-meta {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--s-6);
+  grid-template-columns: 1.5fr 1fr;
+  gap: var(--s-8);
   padding-top: var(--s-6);
   border-top: 1px solid var(--rule);
 }
@@ -710,10 +709,11 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--ink-3);
-  margin-bottom: var(--s-2);
+  margin-bottom: var(--s-3);
 }
 
-.contact-meta dd { font-size: var(--t-body); margin: 0; color: var(--ink); }
+.contact-meta dd { font-size: var(--t-body); margin: 0; color: var(--ink); line-height: 1.7; }
+.contact-meta dd a { color: var(--ink-2); transition: color 0.2s var(--ease-out-quart); }
 .contact-meta dd a:hover { color: var(--accent); }
 
 @media (max-width: 760px) {
@@ -877,14 +877,18 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
 
 .staff-card { position: relative; }
 
-/* The hover crossfade — pure CSS, no WebGL, no fragility.
-   Base image always rendered. Hover image fades in on top.
-   A subtle scale on both gives the move some tactility. */
+/* Staff photo: base image always rendered. Hover image sits on top inside
+   .photo-hover-wrap which has a clip-path animated by GSAP on hover.
+
+   Fallback (no JS, reduced-motion): pure CSS opacity crossfade.
+   Enhanced (with GSAP): diagonal clip-path reveal that wipes from the
+   cursor entry corner across the portrait. */
 .staff-photo {
   position: relative;
   aspect-ratio: 3 / 4;
   overflow: hidden;
   background: oklch(96% 0.005 80);
+  isolation: isolate;
 }
 
 .staff-photo img {
@@ -894,50 +898,103 @@ button { font: inherit; cursor: pointer; background: none; border: none; color: 
   height: 100%;
   object-fit: cover;
   object-position: center top;
-  transition: opacity 0.7s var(--ease-out-quart), transform 1.4s var(--ease-out-quart);
-  will-change: opacity, transform;
 }
 
-.staff-photo .photo-hover { opacity: 0; }
+.staff-photo .photo-base {
+  z-index: 1;
+  transform-origin: center;
+}
 
+/* The hover image lives inside a wrapper so we can clip-path the wrapper
+   without affecting the image inside (which keeps its own scale/transform). */
+.staff-photo .photo-hover-wrap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  /* When GSAP isn't running, default to hidden via clip-path so CSS hover
+     can override; ensures no flash of double-image on slow connections. */
+  clip-path: polygon(100% 0, 100% 0, 100% 0, 100% 0);
+  will-change: clip-path;
+}
+
+.staff-photo .photo-hover-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* CSS fallback for no-JS, no-GSAP, or reduced motion.
+   When the body has the .js-gsap-ready class, this fallback steps aside
+   and GSAP takes over entirely. */
 @media (hover: hover) {
-  .staff-card:hover .staff-photo .photo-base  { opacity: 0; transform: scale(1.02); }
-  .staff-card:hover .staff-photo .photo-hover { opacity: 1; transform: scale(1.02); }
+  body:not(.js-gsap-ready) .staff-card:hover .photo-hover-wrap {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+    transition: clip-path 0.6s var(--ease-out-quart);
+  }
+  body:not(.js-gsap-ready) .staff-photo .photo-hover-wrap {
+    transition: clip-path 0.6s var(--ease-out-quart);
+  }
+  body:not(.js-gsap-ready) .staff-card:hover .photo-base {
+    transform: scale(1.03);
+    transition: transform 1.2s var(--ease-out-quart);
+  }
 }
 
-.staff-caption { margin-top: var(--s-3); }
+@media (prefers-reduced-motion: reduce) {
+  /* When reduced motion is requested, GSAP is bypassed and we use a
+     simple opacity crossfade. */
+  .staff-photo .photo-hover-wrap {
+    clip-path: none !important;
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-out-quart);
+  }
+  .staff-card:hover .photo-hover-wrap { opacity: 1; }
+}
+
+.staff-caption { margin-top: var(--s-4); }
 
 .staff-name {
-  font-size: 1.0625rem;
+  font-size: 1.375rem;
   font-weight: 500;
-  letter-spacing: -0.015em;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
   margin: 0;
 }
 
 .staff-role {
   font-family: var(--font-mono);
-  font-size: var(--t-small);
+  font-size: 0.875rem;
   color: var(--ink-2);
   letter-spacing: 0.02em;
-  margin: 2px 0 0;
+  margin: 4px 0 0;
 }
 
 .staff-contact {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: var(--ink-3);
-  letter-spacing: 0.02em;
-  line-height: 1.5;
-  margin: var(--s-2) 0 0;
+  font-size: 0.9375rem;
+  color: var(--ink-2);
+  letter-spacing: 0.01em;
+  line-height: 1.7;
+  margin: var(--s-4) 0 var(--s-5);
   font-variant-numeric: tabular-nums;
 }
 
 .staff-contact a {
   color: var(--ink-2);
   transition: color 0.3s var(--ease-out-quart);
+  display: inline-block;
 }
 
 .staff-contact a:hover { color: var(--accent); }
+
+/* Extra breathing room between the phone and email lines */
+.staff-contact a + br + a {
+  margin-top: 2px;
+}
 
 .staff-overlay-foot {
   margin-top: var(--s-12);
@@ -1200,16 +1257,26 @@ body.overlay-open { overflow: hidden; }
 .detail-section:first-of-type { border-top: 0; }
 
 .detail-section h2 {
-  font-family: var(--font-mono);
-  font-size: var(--t-eyebrow);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--ink-3);
+  font-size: clamp(0.875rem, 1.1vw, 1rem);
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
   font-weight: 500;
   margin: 0;
   position: sticky;
   top: 6rem;
   align-self: start;
+  text-transform: none;
+}
+
+.detail-section h2::before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 1px;
+  background: currentColor;
+  margin-right: var(--s-3);
+  margin-bottom: 0.32em;
+  vertical-align: middle;
 }
 
 .detail-section .body-text {
@@ -1250,11 +1317,10 @@ body.overlay-open { overflow: hidden; }
 .pull cite {
   display: block;
   font-style: normal;
-  font-family: var(--font-mono);
-  font-size: var(--t-small);
-  letter-spacing: 0.06em;
-  color: var(--ink-3);
-  margin-top: var(--s-8);
+  font-size: 1rem;
+  letter-spacing: -0.005em;
+  color: var(--ink-2);
+  margin-top: var(--s-6);
 }
 
 .detail-media {
@@ -1324,12 +1390,11 @@ body.overlay-open { overflow: hidden; }
 }
 
 .case-cta .case-cta-eyebrow {
-  font-family: var(--font-mono);
-  font-size: var(--t-small);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-3);
+  font-size: clamp(1rem, 1.3vw, 1.1875rem);
+  letter-spacing: -0.005em;
+  color: var(--ink-2);
   margin: 0 0 var(--s-5);
+  line-height: 1.4;
 }
 
 .case-cta .case-cta-title {
@@ -1370,55 +1435,54 @@ body.overlay-open { overflow: hidden; }
    ========================================================= */
 
 /* The intro sits ABOVE .next-case as a clear handoff:
-   "you're done with that case — here's the next one." */
+   "you're done with that case, here's the next one." */
 .next-case-intro {
   position: relative;
   z-index: 2;
-  padding: var(--s-8) var(--gutter) var(--s-6);
+  padding: var(--s-10) var(--gutter) var(--s-6);
   max-width: var(--max);
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: var(--s-6);
-  align-items: baseline;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
   border-top: 1px solid var(--rule);
 }
 
 .next-case-intro .label {
   font-family: var(--font-mono);
-  font-size: var(--t-small);
-  letter-spacing: 0.14em;
+  font-size: 0.8125rem;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--accent);
   display: inline-flex;
   align-items: center;
   gap: var(--s-3);
-  white-space: nowrap;
   margin: 0;
+  font-weight: 500;
 }
 
 .next-case-intro .label::before {
   content: "";
   display: inline-block;
-  width: 28px;
+  width: 36px;
   height: 1px;
   background: var(--accent);
 }
 
 .next-case-intro .lead-in {
-  font-size: var(--t-body);
-  color: var(--ink-2);
+  font-size: clamp(1.5rem, 2.6vw, 2.25rem);
+  color: var(--ink);
   margin: 0;
-  letter-spacing: -0.005em;
-  line-height: 1.5;
-  max-width: 56ch;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  max-width: 28ch;
+  font-weight: 400;
 }
 
 @media (max-width: 760px) {
   .next-case-intro {
-    grid-template-columns: 1fr;
+    padding: var(--s-8) var(--gutter) var(--s-4);
     gap: var(--s-3);
-    padding: var(--s-6) var(--gutter) var(--s-4);
   }
 }
 
@@ -1608,4 +1672,672 @@ body.overlay-open { overflow: hidden; }
   ::view-transition-new(*) {
     animation-duration: 0.001ms !important;
   }
+}
+
+/* =========================================================
+   FRAMFERÐ — process page scrollytelling
+   ========================================================= */
+
+/* Lock body height while page is active so scroll feels deliberate.
+   Don't override anything global; only when .page-framferd is on body. */
+body.page-framferd {
+  /* The bg layer uses --bg-stage which we animate via GSAP.
+     Default starting tint matches the rest of the dark site. */
+  --bg-stage: oklch(13% 0.012 250);
+  background: var(--bg-stage);
+}
+
+/* The fixed colour layer behind everything. */
+.framferd-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: var(--bg-stage);
+  transition: background 0.6s var(--ease-out-quart);
+  pointer-events: none;
+}
+
+main.framferd {
+  position: relative;
+  z-index: 1;
+}
+
+/* Each stage is one viewport tall. GSAP will pin sections that need
+   pinning; the structural height is set by min-height. */
+.framferd-stage {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--s-12) var(--gutter);
+  isolation: isolate;
+}
+
+.stage-inner {
+  position: relative;
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Stage number — tiny mono in corner-ish position */
+.stage-number {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 var(--s-8);
+}
+
+.stage-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 var(--s-6);
+  font-weight: 500;
+}
+
+/* Stage 0: opening statement */
+.stage-intro .stage-lede {
+  font-size: clamp(2rem, 5vw, 4.5rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  margin: 0 auto;
+  max-width: 22ch;
+  color: var(--ink);
+}
+
+.stage-intro .stage-cue {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: var(--s-12) 0 0;
+  position: relative;
+  display: inline-block;
+}
+
+.stage-intro .stage-cue::after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: var(--ink-3);
+  margin: var(--s-3) auto 0;
+  transform-origin: top;
+  animation: scroll-cue 2.4s var(--ease-out-quart) infinite;
+}
+
+@keyframes scroll-cue {
+  0%   { transform: scaleY(0); opacity: 0; }
+  40%  { transform: scaleY(1); opacity: 1; }
+  100% { transform: scaleY(1) translateY(40px); opacity: 0; }
+}
+
+/* Stages 1–5: the giant verb pages */
+.stage-verb {
+  overflow: hidden;
+}
+
+.stage-verb .stage-word {
+  /* This is the centerpiece — huge type. */
+  font-size: clamp(4rem, 16vw, 18rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 0.88;
+  margin: 0;
+  color: var(--ink);
+  text-align: center;
+  position: relative;
+  will-change: transform, opacity;
+}
+
+.stage-verb .stage-caption {
+  font-size: clamp(1.0625rem, 1.4vw, 1.375rem);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  color: var(--ink-2);
+  margin: var(--s-8) auto 0;
+  max-width: 44ch;
+}
+
+/* Stage 6: the philosophy paragraph */
+.stage-prose .prose-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--s-3);
+  margin: var(--s-8) auto 0;
+  max-width: 32ch;
+}
+
+.stage-prose .line {
+  font-size: clamp(1.625rem, 3.6vw, 3.25rem);
+  font-weight: 400;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin: 0;
+  color: var(--ink-2);
+  opacity: 0;
+  transform: translateY(20px);
+  /* GSAP animates these in. CSS just sets the resting state. */
+}
+
+.stage-prose .line.line-final {
+  color: var(--ink);
+  margin-top: var(--s-4);
+  font-size: clamp(1.875rem, 4vw, 3.75rem);
+  letter-spacing: -0.03em;
+}
+
+/* Stage 7: CTA — amber payoff */
+.stage-cta {
+  /* The background variable goes to amber for this stage; the text
+     should sit on top regardless. */
+}
+
+.stage-cta .cta-eyebrow {
+  font-size: clamp(1.125rem, 1.4vw, 1.375rem);
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  margin: 0 0 var(--s-6);
+  opacity: 0.85;
+}
+
+.stage-cta .cta-title {
+  font-size: clamp(2.5rem, 8.5vw, 8rem);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+  margin: 0 auto var(--s-8);
+  max-width: 14ch;
+  color: var(--ink);
+}
+
+.stage-cta .cta-title a {
+  position: relative;
+  display: inline-block;
+  border-bottom: 3px solid currentColor;
+  transition: opacity 0.3s var(--ease-out-quart);
+}
+
+.stage-cta .cta-title a:hover { opacity: 0.75; }
+
+.stage-cta .cta-foot {
+  font-size: clamp(1.125rem, 1.8vw, 1.5rem);
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  opacity: 0.75;
+  margin: 0;
+}
+
+/* Reveal helpers used by GSAP. */
+.framferd .reveal-line {
+  display: inline-block;
+  overflow: hidden;
+}
+
+/* Reduced motion: kill the dramatic scroll effects, show everything calmly. */
+@media (prefers-reduced-motion: reduce) {
+  .framferd-stage {
+    min-height: auto;
+    padding: var(--s-16) var(--gutter);
+  }
+  .stage-verb .stage-word {
+    font-size: clamp(3rem, 9vw, 7rem);
+  }
+  .stage-prose .line {
+    opacity: 1;
+    transform: none;
+  }
+  .framferd-bg { display: none; }
+  body.page-framferd { background: var(--bg); }
+}
+
+/* Mobile: drop the giant-word scale a bit so it doesn't break the layout */
+@media (max-width: 720px) {
+  .stage-verb .stage-word {
+    font-size: clamp(3.5rem, 22vw, 7rem);
+  }
+}
+
+/* Light theme adjustments. The amber CTA stage needs a different
+   tint when the user has flipped to light mode. */
+:root[data-theme="light"] body.page-framferd { --bg-stage: oklch(97% 0.008 90); }
+
+/* =========================================================
+   JAZZ OG TVASS — laid-back social showroom
+   Looser grid, varied card types, hand-feel rotation jitter
+   ========================================================= */
+
+body.page-tvass {
+  /* Slightly warmer base for the laid-back register */
+  background: var(--bg);
+}
+
+/* HERO */
+.tvass-hero {
+  padding: 9rem var(--gutter) var(--s-10);
+  max-width: 1100px;
+  margin: 0 auto;
+  text-align: left;
+}
+
+.tvass-stamp {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 0 0 var(--s-5);
+}
+
+.tvass-title {
+  font-size: clamp(3.5rem, 12vw, 11rem);
+  font-weight: 400;
+  letter-spacing: -0.055em;
+  line-height: 0.92;
+  margin: 0 0 var(--s-6);
+  color: var(--ink);
+}
+
+.tvass-title em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--accent);
+}
+
+.tvass-sub {
+  font-size: clamp(1.125rem, 1.6vw, 1.5rem);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  color: var(--ink-2);
+  max-width: 42ch;
+  margin: 0 0 var(--s-6);
+}
+
+.tvass-meta {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  align-items: center;
+  margin: 0;
+}
+
+.tvass-meta a {
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.2s var(--ease-out-quart);
+}
+
+.tvass-meta a:hover { color: var(--accent); }
+
+/* FEED — masonry-style flex layout. Not actual masonry because we want
+   the reveal to follow document order; instead, a 12-col grid where each
+   post spans a deliberate number of columns. */
+.tvass-feed {
+  padding: var(--s-8) var(--gutter) var(--s-16);
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--s-5);
+  align-items: start;
+}
+
+@media (max-width: 880px) {
+  .tvass-feed { grid-template-columns: repeat(6, 1fr); gap: var(--s-4); }
+}
+@media (max-width: 540px) {
+  .tvass-feed { grid-template-columns: 1fr; }
+}
+
+/* Each post — base card */
+.post {
+  position: relative;
+  background: var(--bg-2);
+  padding: var(--s-5);
+  border-radius: 12px;
+  border: 1px solid var(--rule);
+  overflow: hidden;
+  /* Tilt set via JS from data-tilt attribute */
+  transform: rotate(var(--tilt, 0deg)) translateY(20px);
+  opacity: 0;
+  transition: box-shadow 0.4s var(--ease-out-quart);
+  will-change: transform, opacity;
+}
+
+.post.is-revealed {
+  opacity: 1;
+  transform: rotate(var(--tilt, 0deg)) translateY(0);
+}
+
+.post:hover {
+  box-shadow:
+    0 24px 40px -16px rgba(0, 0, 0, 0.4),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.post-media {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  margin: calc(var(--s-5) * -1) calc(var(--s-5) * -1) var(--s-4);
+  background: var(--bg);
+}
+
+.post-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 1.6s var(--ease-out-quart);
+}
+
+.post:hover .post-media img {
+  transform: scale(1.03);
+}
+
+.post-meta {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  margin: 0 0 var(--s-3);
+}
+
+.post-text {
+  font-size: 1rem;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  margin: 0 0 var(--s-3);
+}
+
+.post-text:last-child { margin-bottom: 0; }
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin: var(--s-3) 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-3);
+}
+
+.post-tags span { color: var(--ink-2); }
+
+.post a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+/* Card variants — different sizes via grid-column-span */
+.post-portrait {
+  grid-column: span 4;
+}
+.post-portrait .post-media {
+  aspect-ratio: 4 / 5;
+}
+
+.post-square {
+  grid-column: span 3;
+}
+.post-square .post-media {
+  aspect-ratio: 1 / 1;
+}
+
+.post-wide {
+  grid-column: span 6;
+}
+.post-wide .post-media {
+  aspect-ratio: 16 / 10;
+}
+
+.post-reel {
+  grid-column: span 3;
+}
+.post-reel .post-media {
+  aspect-ratio: 9 / 16;
+  position: relative;
+}
+.reel-badge {
+  position: absolute;
+  top: var(--s-3);
+  right: var(--s-3);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: color-mix(in oklch, var(--bg) 80%, transparent);
+  backdrop-filter: blur(8px);
+  padding: 4px 8px;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+/* Quote card — typographic, no image */
+.post-quote {
+  grid-column: span 5;
+  background: var(--bg);
+  border-color: var(--accent);
+  border-width: 1px;
+}
+
+.quote-mark {
+  font-size: 4rem;
+  line-height: 0.5;
+  color: var(--accent);
+  margin: 0 0 var(--s-3);
+  font-family: Georgia, serif;
+  opacity: 0.8;
+}
+
+.post-quote-text {
+  font-size: clamp(1.125rem, 1.5vw, 1.375rem);
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  font-weight: 400;
+  margin: 0 0 var(--s-4);
+  max-width: 32ch;
+}
+
+/* Note card — sticky-note style, mono, small */
+.post-note {
+  grid-column: span 3;
+  background: var(--bg);
+  font-family: var(--font-mono);
+  padding: var(--s-5);
+}
+
+.note-text {
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 0 0 var(--s-4);
+  letter-spacing: 0.01em;
+}
+
+.note-text em {
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+/* Playlist card */
+.post-playlist {
+  grid-column: span 4;
+  background: var(--bg);
+}
+
+.playlist-title {
+  font-size: 1.75rem;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  margin: 0 0 var(--s-5);
+  color: var(--ink);
+}
+
+.playlist-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+}
+
+.playlist-list li {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: var(--s-3);
+  padding: var(--s-2) 0;
+  border-bottom: 1px solid var(--rule);
+  align-items: baseline;
+}
+
+.playlist-list li:last-child { border-bottom: 0; }
+
+.track-no {
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+}
+
+.track-name {
+  color: var(--ink);
+  letter-spacing: 0;
+}
+
+.track-name em {
+  font-style: italic;
+  color: var(--ink-2);
+}
+
+/* Band card — sans, no image */
+.post-band {
+  grid-column: span 4;
+  background: var(--bg);
+}
+
+.band-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 var(--s-2);
+}
+
+.band-name {
+  font-size: 1.75rem;
+  font-weight: 400;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin: 0 0 var(--s-4);
+  color: var(--ink);
+}
+
+/* Text-only — typographic post */
+.post-text-only {
+  grid-column: span 5;
+  background: transparent;
+  border: 0;
+  padding: var(--s-6) var(--s-4);
+}
+
+.post-text-only .post-text {
+  font-size: clamp(1.125rem, 1.5vw, 1.375rem);
+  line-height: 1.4;
+  color: var(--ink-2);
+  font-weight: 300;
+  letter-spacing: -0.005em;
+  max-width: 32ch;
+  margin: 0 0 var(--s-3);
+}
+
+.post-text-only .post-meta { color: var(--ink-3); }
+
+/* Sign-off — final card */
+.post-sign-off {
+  grid-column: span 12;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  border-radius: 0;
+  padding: var(--s-10) 0 0;
+  text-align: center;
+}
+
+.post-sign-off .post-text {
+  font-size: clamp(1.125rem, 1.6vw, 1.5rem);
+  line-height: 1.5;
+  color: var(--ink-2);
+  max-width: 38ch;
+  margin: 0 auto;
+}
+
+.post-sign-off .post-meta {
+  margin-bottom: var(--s-5);
+}
+
+/* Responsive: collapse the spans to fewer columns at small widths */
+@media (max-width: 1100px) {
+  .post-portrait,
+  .post-square,
+  .post-reel { grid-column: span 6; }
+
+  .post-wide,
+  .post-quote,
+  .post-playlist,
+  .post-band,
+  .post-text-only { grid-column: span 12; }
+
+  .post-note { grid-column: span 6; }
+}
+
+@media (max-width: 880px) {
+  .post-portrait,
+  .post-square,
+  .post-reel,
+  .post-note { grid-column: span 6; }
+  .post-wide,
+  .post-quote,
+  .post-playlist,
+  .post-band,
+  .post-text-only,
+  .post-sign-off { grid-column: span 6; }
+}
+
+@media (max-width: 540px) {
+  .post,
+  .post-sign-off { grid-column: 1; }
+  /* Disable tilt on mobile so layout doesn't wobble */
+  .post { --tilt: 0deg !important; }
+}
+
+/* Reduced motion: no tilt, no transform on reveal */
+@media (prefers-reduced-motion: reduce) {
+  .post {
+    --tilt: 0deg !important;
+    opacity: 1;
+    transform: none;
+  }
+  .post.is-revealed { transform: none; }
 }

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="fo">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+(function(){
+  try {
+    var m = document.cookie.match(/(?:^|;\s*)virka-theme=(dark|light)/);
+    if (m && m[1] === 'light') {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+  } catch(e) {}
+})();
+</script>
+
+<title>Jazz og Tvass / VIRKA</title>
+<meta name="description" content="Stuttar søgur, smáar lukkur. Innlit í gerandisdagin á VIRKA.">
+<link rel="canonical" href="https://virka.fo/jazz-og-tvass">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Jazz og Tvass, VIRKA">
+<meta property="og:description" content="Innlit í gerandisdagin.">
+<meta property="og:url" content="https://virka.fo/jazz-og-tvass">
+<meta property="og:site_name" content="VIRKA">
+<meta property="og:locale" content="fo_FO">
+
+<meta name="theme-color" content="#181d27">
+<meta name="view-transition" content="same-origin">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23181d27'/%3E%3Ctext x='16' y='22' text-anchor='middle' font-family='sans-serif' font-weight='500' font-size='17' fill='%23f0eadd'%3EV%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body class="page-tvass">
+
+<header class="site-header" role="banner">
+  <a href="index.html" class="brand" aria-label="VIRKA, heim">
+    <svg class="brand-logo" viewBox="0 0 804.24 224.01" fill="currentColor" aria-hidden="true">
+      <path d="M362.9,136.19h18.42c24.49,0,33.45-14.23,33.45-40.14v-54.77c0-24.01-6.42-40.62-34.42-40.62h-106.78l19.98,26.94h78.22c13.52,0,16.31,4.65,16.31,18.68v44.79c0,14.6-2.63,18.19-14.92,18.19h-61.57l85.34,114.76h31.07l-65.09-87.82Z"/>
+      <rect x="215.77" width="26.91" height="223.52"/>
+      <polygon points="87.77 182.72 29.43 .08 0 .08 71.1 223.67 104.15 223.67 175.51 .08 148.27 .08 87.77 182.72"/>
+      <rect x="458.77" width="26.9" height="223.52"/>
+      <polygon points="578.72 .06 493.26 109.43 578.71 223.81 609.43 223.81 524.87 109.49 610.63 .41 578.72 .06"/>
+      <polygon points="733.13 .08 700.08 .08 628.72 223.67 655.95 223.67 716.45 41.02 774.38 222.32 774.8 223.67 804.24 223.67 733.13 .08"/>
+    </svg>
+  </a>
+  <div class="header-right">
+    <nav class="nav" aria-label="Høvuðsleiðing">
+      <a href="avrik.html">Avrik</a>
+      <a href="tilgongd.html">Tilgongd</a>
+      <a href="index.html#starvsfolk">Starvsfólk</a>
+      <a href="jazz-og-tvass.html" aria-current="page">Jazz og Tvass</a>
+      <a href="index.html#samband">Samband</a>
+    </nav>
+    <button class="theme-toggle" type="button" aria-label="Skift tema">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="4"/>
+        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+      </svg>
+    </button>
+    <button class="menu-toggle" aria-label="Lat upp menu">Menu</button>
+  </div>
+</header>
+
+<div class="mobile-nav" role="dialog" aria-modal="true" aria-label="Menu">
+  <button class="mobile-nav-close">Lat aftur</button>
+  <ul class="mobile-nav-list">
+    <li><a href="index.html">Heim</a></li>
+    <li><a href="avrik.html">Avrik</a></li>
+    <li><a href="tilgongd.html">Tilgongd</a></li>
+    <li><a href="index.html#starvsfolk">Starvsfólk</a></li>
+    <li><a href="jazz-og-tvass.html">Jazz og Tvass</a></li>
+    <li><a href="index.html#samband">Samband</a></li>
+  </ul>
+</div>
+
+<main class="tvass">
+
+  <!-- HERO: laid-back intro, like a record-sleeve title -->
+  <section class="tvass-hero">
+    <p class="tvass-stamp">Side B · Innlit · Gerandisdagur</p>
+    <h1 class="tvass-title">Jazz <em>og</em> Tvass.</h1>
+    <p class="tvass-sub">
+      Dagligdagur á VIRKA. Tónleikaframførslur, hugni og smá hugskot, sum
+      kanska blíva til nakað. Onkuntíð bara ein góður koppur av kaffi.
+    </p>
+    <p class="tvass-meta">
+      <span>Fylg við á</span>
+      <a href="https://www.instagram.com/virka.fo/">Instagram</a>
+      <span>·</span>
+      <a href="https://www.facebook.com/virkapromo">Facebook</a>
+      <span>·</span>
+      <a href="https://www.linkedin.com/company/virka-marknadarforoyingar">LinkedIn</a>
+    </p>
+  </section>
+
+  <!-- FEED: continuous reveal mosaic -->
+  <section class="tvass-feed" aria-label="Postar">
+
+    <!-- POST 01: pinned greeting + studio image -->
+    <article class="post post-portrait reveal-item" data-tilt="-0.4">
+      <div class="post-media">
+        <img src="assets/staff/hans-hover.webp" alt="Hans við gittari" loading="lazy">
+      </div>
+      <div class="post-body">
+        <p class="post-meta">@virka.fo · mána 09:14</p>
+        <p class="post-text">
+          Hans hevur funnið gittarið aftur. Mánadagsmorgunin byrjar við einum
+          riffi. Onkuntíð er tað bara so.
+        </p>
+        <p class="post-tags"><span>#virkagerandisdagur</span> <span>#mánadagsljóð</span></p>
+      </div>
+    </article>
+
+    <!-- POST 02: pure-text "tvass" quote -->
+    <article class="post post-quote reveal-item" data-tilt="0.6">
+      <p class="quote-mark" aria-hidden="true">“</p>
+      <p class="post-quote-text">
+        Vit avdúka tað ikki her. Ongin kjansur, at vit her fara at avdúka,
+        at vit hava skrivað eitt summarlag á VIRKA.
+      </p>
+      <p class="post-meta">@virkapromo · sept 2024</p>
+    </article>
+
+    <!-- POST 03: studio image, square -->
+    <article class="post post-square reveal-item" data-tilt="-0.3">
+      <div class="post-media">
+        <img src="assets/staff/bardur-hover.webp" alt="Bárður arbeiðir" loading="lazy">
+      </div>
+      <p class="post-meta">@virka.fo · týsd 11:02</p>
+      <p class="post-text">Bárður og morgunkaffin. Engin fer í gongd uttan.</p>
+    </article>
+
+    <!-- POST 04: tiny mono note -->
+    <article class="post post-note reveal-item" data-tilt="0.5">
+      <p class="note-text">
+        Notatið frá fundinum:<br>
+        <em>“Tað má kenna seg, sum at tað kemur úr eini gomlu plátu.”</em>
+      </p>
+      <p class="post-meta">23. mai · studio 2</p>
+    </article>
+
+    <!-- POST 05: portrait, vertical reel-style -->
+    <article class="post post-reel reveal-item" data-tilt="-0.5">
+      <div class="post-media">
+        <img src="assets/staff/johanna-hover.webp" alt="Jóhanna" loading="lazy">
+        <span class="reel-badge">Reel</span>
+      </div>
+      <p class="post-meta">@virka.fo · 1.4k áhugaði</p>
+      <p class="post-text">Jóhanna ger okkurt nýtt. Vit veita ikki meira.</p>
+    </article>
+
+    <!-- POST 06: wide image / production -->
+    <article class="post post-wide reveal-item" data-tilt="0.2">
+      <div class="post-media">
+        <img src="assets/cases/production.webp" alt="Filmframleiðsla" loading="lazy">
+      </div>
+      <p class="post-meta">@virka.fo · 18. apr</p>
+      <p class="post-text">
+        Bak myndatøkuna. Ein dagur við Immuk, ein dagur við góðum mati.
+      </p>
+    </article>
+
+    <!-- POST 07: mini-playlist card — the "jazz" beat -->
+    <article class="post post-playlist reveal-item" data-tilt="-0.4">
+      <p class="post-meta">Spilliskrá · síðsta vikuna</p>
+      <h3 class="playlist-title">Morgunkaffi.</h3>
+      <ol class="playlist-list">
+        <li><span class="track-no">01</span><span class="track-name">Bill Evans, <em>Peace Piece</em></span></li>
+        <li><span class="track-no">02</span><span class="track-name">Eyðun Nolsøe, <em>Tað veit eg ikki</em></span></li>
+        <li><span class="track-no">03</span><span class="track-name">Pharoah Sanders, <em>Harvest Time</em></span></li>
+        <li><span class="track-no">04</span><span class="track-name">Frændur, <em>Frøya</em></span></li>
+        <li><span class="track-no">05</span><span class="track-name">Chet Baker, <em>Almost Blue</em></span></li>
+      </ol>
+    </article>
+
+    <!-- POST 08: studio image + caption -->
+    <article class="post post-portrait reveal-item" data-tilt="0.3">
+      <div class="post-media">
+        <img src="assets/staff/janus-hover.webp" alt="Janus" loading="lazy">
+      </div>
+      <div class="post-body">
+        <p class="post-meta">@virka.fo · 3. mar</p>
+        <p class="post-text">
+          Janus prøvar nakað. Tað er ikki altíð, at tað virkar fyrstu ferð.
+          Tað er rættiliga so, at tað skal vera.
+        </p>
+      </div>
+    </article>
+
+    <!-- POST 09: pure text — laid-back observation -->
+    <article class="post post-text-only reveal-item" data-tilt="-0.2">
+      <p class="post-text">
+        Ein ting við at vera lítill bólkur: kaffivélin og ítøkligar idéir
+        kunnu vera sama plássið.
+      </p>
+      <p class="post-meta">ein úr starvsfólkinum</p>
+    </article>
+
+    <!-- POST 10: case image -->
+    <article class="post post-square reveal-item" data-tilt="0.4">
+      <div class="post-media">
+        <img src="assets/cases/jm25-rollup.webp" alt="Jobmatch rollup" loading="lazy">
+      </div>
+      <p class="post-meta">@virka.fo · des 2025</p>
+      <p class="post-text">Eitt nýtt avrik er á veg. Meira næstu viku.</p>
+    </article>
+
+    <!-- POST 11: little jazz/band aside -->
+    <article class="post post-band reveal-item" data-tilt="-0.4">
+      <p class="band-eyebrow">Bólkur</p>
+      <h3 class="band-name">Aftur ein æra</h3>
+      <p class="post-text">
+        Ein úr okkum spælir gittar í eini Guns N' Roses tribute-bólki um
+        ummælini. Tað er ikki á CVinum, men tað kemur fram í arbeiðinum.
+      </p>
+      <p class="post-meta">hugskotini blíva ikki bara á skrivibordinum</p>
+    </article>
+
+    <!-- POST 12: portrait — Sarah (now upright) -->
+    <article class="post post-portrait reveal-item" data-tilt="0.3">
+      <div class="post-media">
+        <img src="assets/staff/sarah-hover.webp" alt="Sarah við tekningarbóki" loading="lazy">
+      </div>
+      <div class="post-body">
+        <p class="post-meta">@virka.fo · onsd 16:47</p>
+        <p class="post-text">
+          Sarah er lærlingur, men eitt tekningarbók er ikki bara fyri tey,
+          sum eru í lære. Tað er fyri øll, sum hava hugskot.
+        </p>
+      </div>
+    </article>
+
+    <!-- POST 13: short observation -->
+    <article class="post post-note reveal-item" data-tilt="-0.5">
+      <p class="note-text">
+        Onkuntíð er ein góður telefonpassur betri enn ein góð slide.
+      </p>
+      <p class="post-meta">Torkil, í dag</p>
+    </article>
+
+    <!-- POST 14: wide haga-still -->
+    <article class="post post-wide reveal-item" data-tilt="0.3">
+      <div class="post-media">
+        <img src="assets/cases/haga-still-2.webp" alt="Úr haga á hill banner" loading="lazy">
+      </div>
+      <p class="post-meta">@virka.fo · juni 2025</p>
+      <p class="post-text">
+        Úr haga á hill, dagin fyri. Nakað er altíð fyrr, enn tað sær út.
+      </p>
+    </article>
+
+    <!-- POST 15: final tag, like a sign-off liner note -->
+    <article class="post post-sign-off reveal-item" data-tilt="0">
+      <p class="post-meta">Síða 1 av 1</p>
+      <p class="post-text">
+        Hetta er nakað av tí, sum lýsir okkum. Vilt tú síggja meira, so finnur
+        tú okkum ma. á <a href="https://www.instagram.com/virka.fo/">Instagram</a>.
+        Vilt tú tosa við okkum, kanst tú ringja til okkum á
+        <a href="tel:+298781010">78 10 10</a>, ella tú dettur inn á gólvið.
+        Vit hava verðins besta kaffi :)
+      </p>
+    </article>
+
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="footer-base">
+    <span>© 2026 Sp/f VIRKA · V-tal 643351</span>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="script.js"></script>
+<script src="tvass.js"></script>
+</body>
+</html>
